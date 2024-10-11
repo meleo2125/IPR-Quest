@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StatusBar, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const PatentScreen = () => {
@@ -7,6 +7,7 @@ const PatentScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true} />
       <Text style={styles.title}>Patent Levels</Text>
 
       {/* Level Buttons */}
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
+    marginTop: 20,
     fontSize: 24,
     marginBottom: 20,
     fontWeight: 'bold',
@@ -39,11 +41,11 @@ const styles = StyleSheet.create({
     borderColor: '#422800',
     borderWidth: 2,
     borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 50,
+    paddingVertical: 7,
+    paddingHorizontal: 20,
     marginVertical: 10,
     alignItems: 'center',
-    width: '80%',
+    width: '50%',
   },
   buttonText: {
     color: '#422800',

@@ -1,18 +1,20 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
-import { blue } from 'react-native-reanimated/lib/typescript/reanimated2/Colors';
+import React, { useState, useEffect } from 'react';
+import { StatusBar, View, Text, StyleSheet, TouchableOpacity, ImageBackground, Alert } from 'react-native';
+import * as Speech from 'expo-speech';
 
 const Level1Screen = () => {
   const [step, setStep] = useState(0);
+  const [isGameActive, setIsGameActive] = useState(false);
+  const [currentItem, setCurrentItem] = useState(0);
 
-  // Dialogue steps to guide the user
   const dialogues = [
-    "Hey there, inventor! I'm your guide through the world of patents. Ever thought about what happens when someone comes up with a cool idea or invention?",
-    "Well, that's where patents come in! A patent is like a shield that protects your invention so others can't use it without your permission.",
-    "You might be thinking, 'Is everything patentable?'. The short answer: Nope! Some things are too common or naturally occurring to patent. Let’s play a game to figure it out!"
+    "Welcome to the world of patents! I'm your guide, here to help you understand how patents work.",
+    "A patent is a special right granted to inventors for their new and innovative ideas. Think of it as a shield that protects your invention so others can't use it without your permission.",
+    "Patents encourage innovation by allowing inventors to benefit from their work. Without patents, anyone could take your invention and make it their own!",
+    "But remember, not everything can be patented. Some things are too common or naturally occurring to be eligible for a patent.",
+    "Now, let’s dive into the game to see what kinds of inventions are patentable and what aren’t!"
   ];
 
-  // Game items for "Patentable or Not"
   const gameItems = [
     { item: 'A new type of smartphone', patentable: true },
     { item: 'A naturally growing plant', patentable: false },
@@ -21,55 +23,53 @@ const Level1Screen = () => {
     { item: 'A genetically modified organism', patentable: true }
   ];
 
-  // Game state to check answers
-  const [currentItem, setCurrentItem] = useState(0);
-  const [isGameActive, setIsGameActive] = useState(false);
+  useEffect(() => {
+    if (step < dialogues.length) {
+      Speech.speak(dialogues[step]);
+    }
+  }, [step]);
 
   const handleNextDialogue = () => {
     if (step < dialogues.length - 1) {
       setStep(step + 1);
     } else {
-      // Start the game
       setIsGameActive(true);
     }
   };
 
-  const handleSwipe = (patentable: boolean) => {
+  const handleSwipe = (patentable) => {
     const current = gameItems[currentItem];
     if (patentable === current.patentable) {
       Alert.alert("Correct!", `${current.item} is ${patentable ? 'patentable' : 'not patentable'}.`);
     } else {
       Alert.alert("Oops!", `Actually, ${current.item} is ${current.patentable ? 'patentable' : 'not patentable'}.`);
     }
-    
+
     if (currentItem < gameItems.length - 1) {
       setCurrentItem(currentItem + 1);
     } else {
-      Alert.alert("Game Over!", "You've completed this level. Well done!");
       setIsGameActive(false);
-      setCurrentItem(0); // Reset game for replay
+      setCurrentItem(0);
     }
   };
 
   return (
-    // <ImageBackground
-    //   source={require('../../../assets/images/bg.png')}
-    //   style={styles.background}
-    // >
+    <ImageBackground
+      source={require('../../../assets/images/level1.png')}
+      style={styles.background}
+    >
       <View style={styles.container}>
-        {/* Patent Introduction Dialogue */}
-        {!isGameActive && (
-          <View>
-            <Text style={styles.narratorText}>Narrator:</Text>
-            <Text style={styles.dialogueText}>{dialogues[step]}</Text>
+        <StatusBar hidden={true} />
 
+        {!isGameActive && (
+          <View style={styles.dialogueBox}>
+            <Text style={styles.dialogueText}>{dialogues[step]}</Text>
             <TouchableOpacity style={styles.nextButton} onPress={handleNextDialogue}>
               <Text style={styles.nextButtonText}>{step < dialogues.length - 1 ? "Next" : "Start Game"}</Text>
             </TouchableOpacity>
           </View>
         )}
 
-        {/* Patentable or Not Mini-game */}
         {isGameActive && (
           <View>
             <Text style={styles.title}>Is it Patentable?</Text>
@@ -93,18 +93,19 @@ const Level1Screen = () => {
           </View>
         )}
       </View>
-    // </ImageBackground>
+    </ImageBackground>
   );
 };
 
 export default Level1Screen;
 
-// Styles
+// Styles (same as before)
 const styles = StyleSheet.create({
   background: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 20,
   },
   container: {
     flex: 1,
@@ -112,54 +113,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
-  narratorText: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#000000',
-    
-    marginBottom: 10,
-  },
   dialogueText: {
-    fontSize: 18,
-    color: '#fbeee0',
+    top: 0,
+    fontSize: 20,
+    color: '#000',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 0,
+    lineHeight: 25,
+    width: 300
   },
   nextButton: {
-    backgroundColor: '#422800',
-    padding: 12,
+    backgroundColor: '#3498db',
+    padding: 15,
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    elevation: 10,
   },
   nextButtonText: {
-    color: '#fbeee0',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
   title: {
-    fontSize: 24,
+    top:-30,
+    textAlign: 'center',
+    fontSize: 26,
     fontWeight: 'bold',
-    color: '#fbeee0',
+    color: '#000',
     marginBottom: 20,
   },
   gameItemText: {
-    fontSize: 20,
-    color: '#fbeee0',
+    top:-30,
+    fontSize: 22,
+    color: '#000',
     textAlign: 'center',
-    marginBottom: 20,
+    marginBottom: 30,
   },
   swipeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: '100%',
   },
   swipeButton: {
-    flex: 1,
     padding: 15,
-    marginHorizontal: 10,
+    marginVertical: 10,
     borderRadius: 25,
     alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 2, height: 4 },
+    shadowOpacity: 0.8,
+    shadowRadius: 6,
+    elevation: 10,
   },
   swipeLeft: {
     backgroundColor: '#e74c3c',
@@ -169,7 +177,19 @@ const styles = StyleSheet.create({
   },
   swipeButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+  },
+  dialogueBox: {
+    top: -30,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    borderRadius: 15,
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.5,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

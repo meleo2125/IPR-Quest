@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StatusBar,View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
 const ChaptersScreen = () => {
@@ -7,6 +7,7 @@ const ChaptersScreen = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar hidden={true} />
       <Text style={styles.title}>Chapters</Text>
 
       {/* Chapter Buttons */}
