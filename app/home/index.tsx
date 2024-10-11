@@ -1,13 +1,12 @@
 import React from 'react';
 import { StatusBar, View, Text, StyleSheet, TouchableOpacity, Image, Alert, ImageBackground } from 'react-native';
-
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router'; // Import useRouter for navigation
 
 const HomeScreen = () => {
- 
+  const router = useRouter(); // Initialize the router
+
   const handleButtonPress = (buttonName: string) => {
     Alert.alert(`You pressed ${buttonName}`);
-    // Add additional navigation logic if needed
   };
 
   return (
@@ -16,15 +15,12 @@ const HomeScreen = () => {
       style={styles.background}
     >
       <View style={styles.container}>
-      <StatusBar hidden={true} />
+        <StatusBar hidden={true} />
         {/* Logo */}
         <Image source={require('../../assets/images/logo.png')} style={styles.logo} />
 
         {/* Buttons */}
-        <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Play')}>
-          <Text style={styles.buttonText}>Play</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => handleButtonPress('Chapters')}>
+        <TouchableOpacity style={styles.button} onPress={() => router.push('/chapters')}>
           <Text style={styles.buttonText}>Chapters</Text>
         </TouchableOpacity>
         {/* Updated Link for Tips */}
